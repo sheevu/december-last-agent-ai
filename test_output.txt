@@ -1,0 +1,59 @@
+
+> 27dec@0.0.0 test
+> vitest run
+
+
+[1m[46m RUN [49m[22m [36mv4.0.16 [39m[90mD:/codex/DECEMBER 2025/27dec[39m
+
+10:04:54 pm [vite] (client) warning: Duplicate key "expense" in object literal
+35 |          sale: "Sale",
+36 |          purchase: "Purchase",
+37 |          expense: "Expense",
+   |          ^
+38 |          sorting: "Sorting Data...",
+39 |          detected: "Detected",
+
+  Plugin: vite:esbuild
+  File: D:/codex/DECEMBER 2025/27dec/src/LanguageContext.jsx
+10:04:54 pm [vite] (client) warning: Duplicate key "expense" in object literal
+78 |          sale: "बिक्री",
+79 |          purchase: "खरीद",
+80 |          expense: "खर्च",
+   |          ^
+81 |          sorting: "डेटा छाँट रहे हैं...",
+82 |          detected: "पहचाना गया",
+
+  Plugin: vite:esbuild
+  File: D:/codex/DECEMBER 2025/27dec/src/LanguageContext.jsx
+ [31m❯[39m src/App.test.jsx [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 137[2mms[22m[39m
+[31m     [31m×[31m renders without crashing[39m[32m 135[2mms[22m[39m
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/App.test.jsx > App Component > renders without crashing
+ReferenceError: useState is not defined
+ ❯ VoiceAssistant src/App.jsx:313:31
+    311| const VoiceAssistant = () => {
+    312|   const { t, lang } = useLanguage();
+    313|   const [active, setActive] = useState(false);
+       |                               ^
+    314|   const [response, setResponse] = useState("");
+    315| 
+ ❯ Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+ ❯ renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:11
+ ❯ performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m   Start at [22m 22:04:53
+[2m   Duration [22m 2.11s[2m (transform 193ms, setup 183ms, import 766ms, tests 137ms, environment 806ms)[22m
+
