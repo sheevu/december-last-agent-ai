@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-do
 import { LayoutDashboard, Scan, ShoppingBag, Users, PlusCircle, Languages, Briefcase, Settings, Target, TrendingUp, AlertTriangle, Lightbulb, Mic, MessageSquare } from 'lucide-react';
 import { LanguageProvider, useLanguage } from './LanguageContext';
 import './index.css';
+import { supabase } from './supabaseClient';
 
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -379,6 +380,27 @@ const InvoiceGenerator = ({ cart, clearCart }) => {
     window.print();
   };
 
+  const handleSaveInvoice = async () => {
+    const invoiceData = {
+      customer_name: customerName,
+      customer_phone: customerPhone,
+      total: total,
+      items: cart,
+      created_at: new Date().toISOString()
+    };
+
+    const { error } = await supabase.from('invoices').insert([invoiceData]);
+
+    if (!error) {
+      alert("Invoice Saved to Supabase!");
+      clearCart();
+    } else {
+      console.error("Error saving invoice:", error);
+      alert("Error saving invoice locally, clearing cart anyway.");
+      clearCart();
+    }
+  };
+
   if (cart.length === 0) {
     return (
       <div className="animate-fade-in" style={{ padding: '1.5rem', textAlign: 'center' }}>
@@ -472,7 +494,7 @@ const InvoiceGenerator = ({ cart, clearCart }) => {
         </button>
       </div>
 
-      <button className="btn btn-primary" onClick={() => { alert("Invoice Saved!"); clearCart(); }} style={{ width: '100%', marginTop: '1rem', background: 'var(--accent)' }}>
+      <button className="btn btn-primary" onClick={handleSaveInvoice} style={{ width: '100%', marginTop: '1rem', background: 'var(--accent)' }}>
         {t('generateInvoice')}
       </button>
 
@@ -883,6 +905,41 @@ function App() {
   const [cart, setCart] = useState([]);
   const [hasProfile, setHasProfile] = useState(!!localStorage.getItem('sudarshan_biz_profile'));
 
+  useEffect(() => {
+    const fetchData = async () => {
+      // 1. Fetch Products
+      const { data: productsData, error: productsError } = await supabase
+        .from('products')
+        .select('*');
+
+      if (productsData && !productsError) {
+        if (productsData.length === 0) {
+          // Seed initial products if DB is empty
+          await supabase.from('products').insert(initialProducts);
+          setProducts(initialProducts);
+        } else {
+          setProducts(productsData);
+        }
+      } else {
+        console.warn("Could not fetch products from Supabase, using local data.");
+      }
+
+      // 2. Fetch Profile (only if hasProfile isn't already set from localStorage)
+      if (!hasProfile) {
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .single();
+
+        if (profileData && !profileError) {
+          localStorage.setItem('sudarshan_biz_profile', JSON.stringify(profileData));
+          setHasProfile(true);
+        }
+      }
+    };
+    fetchData();
+  }, []);
+
   const addToCart = (product) => {
     setCart(prev => {
       const existing = prev.find(item => item.id === product.id);
@@ -893,17 +950,33 @@ function App() {
     });
   };
 
-  const updateStock = (productId, amount) => {
+  const updateStock = async (productId, amount) => {
     setProducts(prev => prev.map(p =>
       p.id === productId ? { ...p, stock: Math.max(0, p.stock + amount) } : p
     ));
+
+    // Sync with Supabase if configured
+    const product = products.find(p => p.id === productId);
+    if (product) {
+      const newStock = Math.max(0, product.stock + amount);
+      await supabase
+        .from('products')
+        .update({ stock: newStock })
+        .eq('id', productId);
+    }
   };
 
   const clearCart = () => setCart([]);
 
   return (
     <LanguageProvider>
-      {!hasProfile && <UserInfoModal onSave={() => setHasProfile(true)} />}
+      {!hasProfile && (
+        <UserInfoModal onSave={async (data) => {
+          setHasProfile(true);
+          // Sync profile to Supabase
+          await supabase.from('profiles').insert([data]);
+        }} />
+      )}
       <Router>
         <Nav
           products={products}
