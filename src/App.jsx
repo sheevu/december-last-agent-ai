@@ -774,7 +774,7 @@ const Nav = ({ products, addToCart, updateStock, cart, clearCart, cartCount }) =
   const { t, lang, setLang } = useLanguage();
   const [showSettings, setShowSettings] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [apiKey, setApiKey] = useState(localStorage.getItem('gemini_api_key') || "");
+  const [apiKey, setApiKey] = useState(localStorage.getItem('gemini_api_key') || import.meta.env.VITE_GEMINI_API_KEY || "");
 
   const saveKey = () => {
     localStorage.setItem('gemini_api_key', apiKey);
