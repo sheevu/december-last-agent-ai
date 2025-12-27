@@ -79,7 +79,7 @@ const Dashboard = () => {
       <div className="card">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
           <Target size={20} color="var(--secondary)" />
-          <h3>{t('revenue')} vs {t('expense')}</h3>
+          <h3>{t('revenue')} vs {t('expenseLabel')}</h3>
         </div>
         <div style={{ height: '200px' }}>
           <ResponsiveContainer width="100%" height="100%">
@@ -99,7 +99,7 @@ const Dashboard = () => {
       <div className="card">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
           <AlertTriangle size={20} color="#fbbf24" />
-          <h3>{t('inventory')}</h3>
+          <h3>{t('inventoryStatus')}</h3>
         </div>
         <div style={{ height: '200px', display: 'flex', justifyContent: 'center' }}>
           <ResponsiveContainer width="100%" height="100%">
